@@ -8,7 +8,7 @@ import { ValidationException } from '../exceptions/validation.exception';
 interface ErrorResponse {
   statusCode: number;
   message: string | string[];
-  reasonPhrase: ReasonPhrases | object | string;
+  reasonPhrase: ReasonPhrases | object | string | string[];
 }
 
 export class CatchAllErrorsFilter implements ExceptionFilter {
@@ -36,9 +36,9 @@ export class CatchAllErrorsFilter implements ExceptionFilter {
       errorResponse.statusCode = exception.getStatus();
       errorResponse.reasonPhrase = exception.getResponse();
     } else if (exception instanceof ValidationException) {
-      errorResponse.message = exception.message;
+      errorResponse.message = exception.getResponse().toString();
       errorResponse.statusCode = exception.getStatus();
-      errorResponse.reasonPhrase = exception.getResponse();
+      errorResponse.reasonPhrase = exception.message;
     } else {
       console.error('[UnhandledError]', exception);
     }

@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeormConfig } from './configs/typeorm.config';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CustomerModule } from './modules/customer/interfaces/customer.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), TypeormConfig.forRoot()],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeormConfig.forRoot(),
+    CqrsModule.forRoot(),
+    CustomerModule,
+  ],
   controllers: [],
   providers: [],
 })

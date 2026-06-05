@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 
-export const CRYPTO_SERVICE = Symbol('CRYPTO_SERVICE');
+export const HASHER_SERVICE = Symbol('HASHER_SERVICE');
 
 @Injectable()
-export class CryptoService {
+export class HasherService {
   private readonly algorithm: string = 'aes-256-cbc';
   private readonly length: number = 10;
   private readonly key: Buffer;

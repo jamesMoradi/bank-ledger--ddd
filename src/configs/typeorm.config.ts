@@ -1,5 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CustomerEntity } from 'src/modules/customer/infrastructure/entities/customer.entity';
 
 export class TypeormConfig {
   static forRoot = () =>
@@ -14,9 +15,11 @@ export class TypeormConfig {
         port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USER'),
         entities: [
+          CustomerEntity,
+          'dist/**/**/**/**/*.entity{.ts,.js}',
           'dist/**/**/**/*.entity{.ts,.js}',
-          'dist/**/**/*.entity{.ts,.js}',
         ],
+        synchronize: true,
       }),
     });
 }
