@@ -34,6 +34,14 @@ export class CustomerRepository implements ICustomerRepository {
     return entity ? CustomerMapper.toCore(entity) : null;
   }
 
+  async findCustomerWithAccount(id: string): Promise<Customer | null> {
+    const entity = await this.repository.findOne({
+      where: { id },
+      relations: { accounts: true },
+    });
+    return entity ? CustomerMapper.toCore(entity) : null;
+  }
+
   async save(customer: Customer): Promise<Customer> {
     const entity = CustomerMapper.toEntity(customer);
     const core = await this.repository.save({

@@ -1,6 +1,7 @@
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { TablesNames } from 'src/common/enums/tables-name.enum';
-import { Column, Entity } from 'typeorm';
+import { AccountEntity } from 'src/modules/accounts/infrastructure/entities/account.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity(TablesNames.CUSTOMERS)
 export class CustomerEntity extends CoreEntity {
@@ -16,6 +17,6 @@ export class CustomerEntity extends CoreEntity {
   @Column({ unique: true })
   email: string;
 
-  // @OneToMany(() => AccountsEntity, accounts => accounts.customer)
-  // accounts: AccountsEntity[]
+  @OneToMany(() => AccountEntity, (accounts) => accounts.customer)
+  accounts: AccountEntity[];
 }

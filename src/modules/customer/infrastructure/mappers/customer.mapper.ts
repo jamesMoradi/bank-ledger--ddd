@@ -1,3 +1,4 @@
+import { Account } from 'src/modules/accounts/domain/entities/account.entity';
 import { Customer } from '../../domain/entities/customer.entity';
 import { Email } from '../../domain/value-objects/email.vo';
 import { FullName } from '../../domain/value-objects/full-name.vo';
@@ -23,6 +24,17 @@ export class CustomerMapper {
       HashPassword.create(entity.hashedPassword),
       NationalId.create(entity.nationalId),
       FullName.create(entity.fullName),
+      entity.accounts.map((account) =>
+        Account.create({
+          id: account.id,
+          currency: account.currency,
+          balance: account.balance,
+          iban: account.iban,
+          status: account.status,
+          createdAt: account.createdAt,
+          customer: undefined,
+        }),
+      ),
     );
   }
 }

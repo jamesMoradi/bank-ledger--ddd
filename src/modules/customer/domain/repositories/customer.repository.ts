@@ -8,4 +8,5 @@ export interface ICustomerRepository {
   findByNationalId(nationalId: string): Promise<null | Customer>;
   findAll(): Promise<Customer[]>;
   save(customer: Customer): Promise<Customer>;
+  findCustomerWithAccount(id: string): Promise<Customer | null>;
 }

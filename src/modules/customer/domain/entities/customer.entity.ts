@@ -1,3 +1,4 @@
+import { Account } from 'src/modules/accounts/domain/entities/account.entity';
 import { CustomerChangeEmailEvent } from '../events/customer-change-email.event';
 import { CustomerChangeFullNameEvent } from '../events/customer-change-fullname.event';
 import { CustomerChangePasswordEvent } from '../events/customer-change-password.event';
@@ -13,7 +14,7 @@ export class Customer {
   private _email: Email;
   private _hashPassword: HashPassword;
   private readonly _nationalId: NationalId;
-  //   private readonly _accounts: Account[] | [];
+  private readonly _accounts: Account[] | [];
 
   constructor(
     id: string | undefined,
@@ -21,13 +22,14 @@ export class Customer {
     hashPassword: HashPassword,
     nationalId: NationalId,
     public fullName: FullName,
-    // accounts: Account[] | []
+    accounts: Account[] = [],
   ) {
     this._email = email;
     this._hashPassword = hashPassword;
     this._id = id;
     this._nationalId = nationalId;
     this._domainEvents = [];
+    this._accounts = accounts;
   }
 
   static create(props: {
@@ -55,24 +57,12 @@ export class Customer {
     return customer;
   }
 
-  // static reconstitute(props: {
-  //   id: string;
-  //   email: string;
-  //   fullName: string;
-  //   nationalId: string;
-  //   createdAt: Date;
-  // }): Customer {
-  //   return new Customer(
-  //     props.id,
-  //     Email.create(props.email),
-  //     FullName.create(props.fullName),
-  //     NationalId.create(props.nationalId),
-  //     props.createdAt,
-  //   );
-  // }
-
   get nationalId() {
     return this._nationalId;
+  }
+
+  get accountsCount() {
+    return this._accounts.length;
   }
 
   get email() {
@@ -87,9 +77,9 @@ export class Customer {
     return this._hashPassword;
   }
 
-  //   get accounts(){
-  //     return this._accounts
-  //   }
+  get accounts() {
+    return this._accounts;
+  }
 
   private addEvent(event: object) {
     this._domainEvents.push(event);
