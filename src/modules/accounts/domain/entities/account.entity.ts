@@ -3,7 +3,7 @@ import { IBAN } from '../value-objects/iban.vo';
 import { Status } from '../value-objects/account-status.vo';
 import { AccountStatus } from '../../shared/enums/account-status.enum';
 import { Currencies } from 'src/common/enums/currency.enum';
-import { Money } from 'src/modules/shared/domain/value-objeects/money.vo';
+import { Money } from 'src/modules/shared/domain/value-objects/money.vo';
 import { AccountIsFreezeError } from '../errors/account-is-freeze.error';
 import { AccountClosedError } from '../errors/account-is-closed.error';
 
@@ -14,6 +14,7 @@ export class Account {
   private _money: Money;
   private _status: Status;
   private _domainEvents: object[];
+  private _customerId: string;
   createdAt: Date;
 
   private constructor(
@@ -22,6 +23,7 @@ export class Account {
     status: Status,
     money: Money,
     createdAt: Date = new Date(),
+    customerId: string,
     customer?: Customer,
   ) {
     this._id = id;
@@ -30,6 +32,7 @@ export class Account {
     this._status = status;
     this._money = money;
     this.createdAt = createdAt;
+    this._customerId = customerId;
     this._domainEvents = [];
   }
 
@@ -39,18 +42,17 @@ export class Account {
     status: AccountStatus;
     currency: Currencies;
     customer: undefined | Customer;
-    iban?: IBAN;
+    customerId: string;
+    iban?: IBAN | string;
     createdAt?: Date;
   }) {
-    const {
-      id,
-      balance,
-      status,
-      currency,
-      createdAt,
-      customer,
-      iban = IBAN.generate(),
-    } = props;
+    const { id, balance, status, currency, createdAt, customer, customerId } =
+      props;
+
+    let { iban } = props;
+
+    if (!iban) iban = IBAN.generate();
+    iban = typeof iban === 'string' ? IBAN.create(iban) : iban;
 
     return new Account(
       id,
@@ -58,6 +60,7 @@ export class Account {
       Status.create(status),
       Money.of(balance, currency),
       createdAt,
+      customerId,
       customer,
     );
   }
@@ -80,6 +83,10 @@ export class Account {
 
   get status() {
     return this._status;
+  }
+
+  get customerId() {
+    return this._customerId;
   }
 
   isBalanceZero = () => this.money.isZero();

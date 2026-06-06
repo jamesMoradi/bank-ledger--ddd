@@ -13,6 +13,7 @@ import { CustomerNotFoundError } from 'src/modules/customer/domain/errors/custom
 import { MaximumAccountLimitReachError } from '../../domain/errors/max-account-reach.error';
 import { Account } from '../../domain/entities/account.entity';
 import { AccountStatus } from '../../shared/enums/account-status.enum';
+import { IResponse } from 'src/modules/shared/response/success.response';
 
 @CommandHandler(AccountOpenCommand)
 export class AccountOpenHandler implements ICommandHandler<AccountOpenCommand> {
@@ -22,7 +23,7 @@ export class AccountOpenHandler implements ICommandHandler<AccountOpenCommand> {
     @Inject(ACCOUNT_REPOSITORY)
     private readonly accountRepository: IAccountRepository,
   ) {}
-  async execute(command: AccountOpenCommand): Promise<{ message: string }> {
+  async execute(command: AccountOpenCommand): Promise<IResponse> {
     const { customerId, currency } = command;
     const customer =
       await this.customerRepository.findCustomerWithAccount(customerId);
@@ -31,12 +32,14 @@ export class AccountOpenHandler implements ICommandHandler<AccountOpenCommand> {
       throw new MaximumAccountLimitReachError(
         "dear customer you can't have more than 3 accounts",
       );
+
     const newAccount = Account.create({
       id: undefined,
       balance: 0,
       customer: customer,
       status: AccountStatus.ACTIVE,
       currency,
+      customerId: customer.id,
     });
     await this.accountRepository.save(newAccount);
     return {

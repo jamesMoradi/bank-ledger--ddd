@@ -1,5 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccountEntity } from 'src/modules/accounts/infrastructure/entities/account.entity';
 import { CustomerEntity } from 'src/modules/customer/infrastructure/entities/customer.entity';
 
 export class TypeormConfig {
@@ -10,12 +11,13 @@ export class TypeormConfig {
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('DB_HOST'),
-        name: configService.get<string>('DB_NAME'),
+        database: configService.get<string>('DB_NAME'),
         password: configService.get<string>('DB_PASSWORD'),
         port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USER'),
         entities: [
           CustomerEntity,
+          AccountEntity,
           'dist/**/**/**/**/*.entity{.ts,.js}',
           'dist/**/**/**/*.entity{.ts,.js}',
         ],

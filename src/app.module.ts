@@ -4,6 +4,7 @@ import { TypeormConfig } from './configs/typeorm.config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CustomerModule } from './modules/customer/interfaces/customer.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { AccountModule } from './modules/accounts/interfaces/account.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     CqrsModule.forRoot(),
     EventEmitterModule.forRoot(),
     CustomerModule,
+    AccountModule,
   ],
   controllers: [],
   providers: [],

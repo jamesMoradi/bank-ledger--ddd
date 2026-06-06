@@ -6,19 +6,20 @@ export class SwaggerConfig {
   static forRoot(app: INestApplication) {
     const config = new DocumentBuilder()
       .setTitle('Bank Ledger System')
-      .setDescription('a bank ledger system designed with ddd structure')
+      .setDescription('A bank ledger system designed with DDD structure')
       .setVersion('v0.0.1')
-      .addBearerAuth(this.swaggerAuthConfig(), 'Authorization')
+      .addBearerAuth(this.swaggerAuthConfig(), 'jwt')
+      .addSecurityRequirements('jwt')
       .build();
 
-    const swaggerDocument = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('/swagger', app, swaggerDocument);
+    const document = SwaggerModule.createDocument(app, config);
+
+    SwaggerModule.setup('/swagger', app, document);
   }
 
   private static swaggerAuthConfig = (): SecuritySchemeObject => ({
     type: 'http',
-    bearerFormat: 'JWT',
-    in: 'header',
     scheme: 'bearer',
+    bearerFormat: 'JWT',
   });
 }

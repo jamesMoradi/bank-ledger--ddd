@@ -5,6 +5,7 @@ import { FullName } from '../../domain/value-objects/full-name.vo';
 import { HashPassword } from '../../domain/value-objects/hash-password.vo';
 import { NationalId } from '../../domain/value-objects/national-id.vo';
 import { CustomerEntity } from '../entities/customer.entity';
+import { IBAN } from 'src/modules/accounts/domain/value-objects/iban.vo';
 
 export class CustomerMapper {
   static toEntity(core: Customer): CustomerEntity {
@@ -18,23 +19,27 @@ export class CustomerMapper {
   }
 
   static toCore(entity: CustomerEntity): Customer {
+    const accounts = entity.accounts
+      ? entity.accounts.map((account) =>
+          Account.create({
+            id: account.id,
+            currency: account.currency,
+            balance: account.balance,
+            iban: IBAN.create(account.iban),
+            status: account.status,
+            createdAt: account.createdAt,
+            customer: undefined,
+            customerId: entity.id,
+          }),
+        )
+      : [];
     return new Customer(
       entity.id,
       Email.create(entity.email),
       HashPassword.create(entity.hashedPassword),
       NationalId.create(entity.nationalId),
       FullName.create(entity.fullName),
-      entity.accounts.map((account) =>
-        Account.create({
-          id: account.id,
-          currency: account.currency,
-          balance: account.balance,
-          iban: account.iban,
-          status: account.status,
-          createdAt: account.createdAt,
-          customer: undefined,
-        }),
-      ),
+      accounts,
     );
   }
 }
