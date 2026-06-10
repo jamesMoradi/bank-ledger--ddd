@@ -13,6 +13,7 @@ export class AccountMapper {
       iban,
       customerId,
     } = entity;
+
     return Account.create({
       id,
       iban,

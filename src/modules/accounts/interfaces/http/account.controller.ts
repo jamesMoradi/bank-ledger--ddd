@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post, Req } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -16,11 +16,6 @@ import { AuthDecorator } from 'src/common/decorators/auth.decorator';
 @AuthDecorator()
 export class AccountController {
   constructor(private readonly commandBus: CommandBus) {}
-
-  @Get()
-  text() {
-    return 'cool';
-  }
 
   @Post()
   @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)

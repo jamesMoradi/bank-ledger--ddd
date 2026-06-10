@@ -124,7 +124,7 @@ export class Account {
 
   decreaseBalance(amount: number, currency: Currencies) {
     this.assertActive();
-    this._money = this.money.add(Money.of(-amount, currency));
+    this._money = this.money.decrease(Money.of(amount, currency));
   }
 
   pullEvents() {

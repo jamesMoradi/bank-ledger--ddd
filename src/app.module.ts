@@ -5,6 +5,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CustomerModule } from './modules/customer/interfaces/customer.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AccountModule } from './modules/accounts/interfaces/account.module';
+import { TransactionModule } from './modules/transaction/infrastructure/transaction.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AccountModule } from './modules/accounts/interfaces/account.module';
     EventEmitterModule.forRoot(),
     CustomerModule,
     AccountModule,
+    TransactionModule,
   ],
   controllers: [],
   providers: [],

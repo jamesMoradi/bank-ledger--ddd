@@ -2,6 +2,8 @@ import { Currencies } from 'src/common/enums/currency.enum';
 import { Currency } from './currency.vo';
 import { BadRequestError } from '../errors/bad-request.error';
 import { isNumber } from 'class-validator';
+import { CurrencyNotMatchError } from 'src/modules/transaction/domain/errors/currency-not-match.error';
+import { AmountNotEnoughError } from 'src/modules/transaction/domain/errors/amount-not-enough.error';
 
 export class Money {
   private readonly _amount: number;
@@ -18,6 +20,7 @@ export class Money {
       throw new BadRequestError('amount must be a valid number');
 
     if (amount < 0) throw new BadRequestError('amount can not be negative');
+
     return new Money(amount, cur);
   }
 
@@ -34,6 +37,12 @@ export class Money {
     return Money.of(money.amount + this._amount, money.currency.code);
   }
 
+  decrease(money: Money) {
+    this.assertSameCurrency(money);
+    this.assertDecreaseAmount(money);
+    return Money.of(this._amount - money.amount, money.currency.code);
+  }
+
   isEquals = (amount: number) => this._amount === amount;
 
   isLessThan = (amount: number) => this._amount < amount;
@@ -42,10 +51,17 @@ export class Money {
 
   isZero = () => this._amount === 0;
 
+  private assertDecreaseAmount(other: Money) {
+    if (other.amount > this._amount)
+      throw new AmountNotEnoughError(
+        'account balance is not enough for this transaction',
+      );
+  }
+
   private assertSameCurrency(other: Money): void {
     if (!this._currency.equals(other._currency.toString())) {
-      throw new Error(
-        `Currency mismatch: ${this._currency.toString()} vs ${other._currency.toString()}`,
+      throw new CurrencyNotMatchError(
+        'currencies for transaction is not match',
       );
     }
   }

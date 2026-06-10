@@ -33,5 +33,6 @@ import {
     AccountOpenHandler,
     AuthGuard,
   ],
+  exports: [ACCOUNT_REPOSITORY, AccountEntity],
 })
 export class AccountModule {}

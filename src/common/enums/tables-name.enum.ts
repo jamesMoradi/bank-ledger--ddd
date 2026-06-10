@@ -5,6 +5,7 @@ export enum TablesNames {
   NOTIFICATIONS = 'notifications',
   TRANSACTIONS = 'transactions',
   WITHDRAWS = 'withdraws',
-  TRANSFORMS = 'transforms',
+  DEPOSITS = 'deposits',
+  TRANSFERS = 'transfers',
   FRAUDS = 'frauds',
 }
