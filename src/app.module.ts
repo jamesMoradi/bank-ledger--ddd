@@ -6,6 +6,8 @@ import { CustomerModule } from './modules/customer/interfaces/customer.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AccountModule } from './modules/accounts/interfaces/account.module';
 import { TransactionModule } from './modules/transaction/infrastructure/transaction.module';
+import { FraudModule } from './modules/fraud/interface/fraud.modeule';
+import { NotificationModule } from './modules/notifications/infrastructure/notification.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { TransactionModule } from './modules/transaction/infrastructure/transact
     CustomerModule,
     AccountModule,
     TransactionModule,
+    FraudModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [],

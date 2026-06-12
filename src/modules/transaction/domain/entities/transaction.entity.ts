@@ -93,6 +93,8 @@ export class Transaction {
     transfer.addEvent(
       new TransferDebitedEvent(accountId, receiverAccountId, amount, currency),
     );
+
+    return transfer;
   }
 
   static createWithdraw(props: {

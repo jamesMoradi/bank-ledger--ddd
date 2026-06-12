@@ -1,6 +1,7 @@
 import { CoreEntity } from 'src/common/entities/core.entity';
 import { TablesNames } from 'src/common/enums/tables-name.enum';
 import { AccountEntity } from 'src/modules/accounts/infrastructure/entities/account.entity';
+import { NotificationEntity } from 'src/modules/notifications/infrastructure/entities/notification.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity(TablesNames.CUSTOMERS)
@@ -19,4 +20,7 @@ export class CustomerEntity extends CoreEntity {
 
   @OneToMany(() => AccountEntity, (accounts) => accounts.customer)
   accounts: AccountEntity[];
+
+  @OneToMany(() => NotificationEntity, (notification) => notification.customer)
+  notifications: NotificationEntity;
 }

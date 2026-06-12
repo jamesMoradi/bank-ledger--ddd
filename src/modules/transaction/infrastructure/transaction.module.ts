@@ -53,5 +53,6 @@ import { TransactionEventHandlerModule } from '../application/event-handlers/eve
     GetFiledByAccountIdQuery,
     GetByAccountIdAndTypeQuery,
   ],
+  exports: [TRANSACTION_REPOSITORY],
 })
 export class TransactionModule {}
