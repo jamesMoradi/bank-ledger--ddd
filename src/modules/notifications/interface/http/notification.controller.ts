@@ -12,9 +12,10 @@ import {
   NOTIFICATION_REPOSITORY,
 } from '../../domain/repositories/notification.repository';
 import { AuthDecorator } from 'src/common/decorators/auth.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { Notification } from '../../domain/entities/notification.entity';
+import { SwaggerConsumes } from 'src/common/enums/swagger-consumes.enum';
 
 @ApiTags('Notifications')
 @Controller('notifications')
@@ -34,6 +35,7 @@ export class NotificationController {
   }
 
   @Get(':customerId')
+  @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   getAll(
     @Param('customerId', ParseUUIDPipe) customerId: string,
   ): Promise<Notification[]> {
@@ -41,6 +43,7 @@ export class NotificationController {
   }
 
   @Get(':customerId/unread')
+  @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   getUnread(
     @Param('customerId', ParseUUIDPipe) customerId: string,
   ): Promise<Notification[]> {
@@ -48,6 +51,7 @@ export class NotificationController {
   }
 
   @Get(':customerId/read-all')
+  @ApiConsumes(SwaggerConsumes.UrlEncoded, SwaggerConsumes.Json)
   markAllAsRead(
     @Param('customerId', ParseUUIDPipe) customerId: string,
   ): Promise<void> {
