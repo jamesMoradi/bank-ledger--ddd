@@ -6,6 +6,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AccountStatus } from '../../shared/enums/account-status.enum';
 import { Currencies } from 'src/common/enums/currency.enum';
 import { TransactionEntity } from 'src/modules/transaction/infrastructure/entities/transaction.entity';
+import { FraudEntity } from 'src/modules/fraud/infrastructure/entities/fraud.entity';
 
 @Entity(TablesNames.ACCOUNTS)
 export class AccountEntity extends CoreEntity {
@@ -30,4 +31,7 @@ export class AccountEntity extends CoreEntity {
 
   @OneToMany(() => TransactionEntity, (transaction) => transaction.account)
   transactions: TransactionEntity[];
+
+  @OneToMany(() => FraudEntity, (fraud) => fraud.account)
+  frauds: FraudEntity[];
 }

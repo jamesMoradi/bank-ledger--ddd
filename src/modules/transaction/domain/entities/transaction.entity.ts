@@ -3,6 +3,10 @@ import { TransactionStatus } from '../value-objects/status.vo';
 import { Currencies } from 'src/common/enums/currency.enum';
 import { TransactionStatus as TransactionStatusEnum } from '../../shared/enums/transaction.status-enum';
 import { TransactionType } from '../../shared/enums/transaction-type.enum';
+import { MoneyDepositedEvent } from '../events/money-deposit.event';
+import { TransferDebitedEvent } from '../events/transfer-debit.event';
+import { MoneyWithdrawEvent } from '../events/money-withdraw.event';
+import { TransferFailedEvent } from '../events/transfer-failed.event';
 
 export class Transaction {
   private _id: string;
@@ -11,6 +15,7 @@ export class Transaction {
   private _status: TransactionStatus;
   private _money: Money;
   private _receiverAccountId?: string;
+  private _domainEvents: object[];
 
   private constructor(
     id: string,
@@ -26,6 +31,7 @@ export class Transaction {
     this._status = status;
     this._type = type;
     this._receiverAccountId = receiverAccountId;
+    this._domainEvents = [];
   }
 
   static reconstitute(props: {
@@ -57,13 +63,15 @@ export class Transaction {
   }) {
     const { accountId, amount, currency, id } = props;
 
-    return new Transaction(
+    const deposit = new Transaction(
       id,
       accountId,
       TransactionStatus.create(TransactionStatusEnum.PENDING),
       Money.of(amount, currency),
       TransactionType.DEPOSIT,
     );
+    deposit.addEvent(new MoneyDepositedEvent(accountId, amount, currency));
+    return deposit;
   }
 
   static createTransfer(props: {
@@ -74,13 +82,16 @@ export class Transaction {
     receiverAccountId: string;
   }) {
     const { accountId, amount, currency, id, receiverAccountId } = props;
-    return new Transaction(
+    const transfer = new Transaction(
       id,
       accountId,
       TransactionStatus.create(TransactionStatusEnum.PENDING),
       Money.of(amount, currency),
       TransactionType.TRANSFER_OUT,
       receiverAccountId,
+    );
+    transfer.addEvent(
+      new TransferDebitedEvent(accountId, receiverAccountId, amount, currency),
     );
   }
 
@@ -92,13 +103,15 @@ export class Transaction {
   }) {
     const { accountId, amount, currency, id } = props;
 
-    return new Transaction(
+    const withdraw = new Transaction(
       id,
       accountId,
       TransactionStatus.create(TransactionStatusEnum.PENDING),
       Money.of(amount, currency),
       TransactionType.WITHDRAW,
     );
+    withdraw.addEvent(new MoneyWithdrawEvent(accountId, amount, currency));
+    return withdraw;
   }
 
   get id() {
@@ -130,6 +143,16 @@ export class Transaction {
   }
 
   markAsFailed() {
+    if (this._type === TransactionType.TRANSFER_OUT) {
+      this.addEvent(
+        new TransferFailedEvent(
+          this._accountId,
+          this._receiverAccountId as string,
+          this._money.amount,
+          this._money.currency.code,
+        ),
+      );
+    }
     this._status = TransactionStatus.create(TransactionStatusEnum.FAILED);
   }
 
@@ -138,4 +161,14 @@ export class Transaction {
   isTransfer = () => this._type === TransactionType.TRANSFER_OUT;
 
   isDeposit = () => this._type === TransactionType.DEPOSIT;
+
+  private addEvent(event: object) {
+    this._domainEvents.push(event);
+  }
+
+  pullEvents() {
+    const events = [...this._domainEvents];
+    this._domainEvents = [];
+    return events;
+  }
 }

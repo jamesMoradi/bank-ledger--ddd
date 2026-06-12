@@ -23,6 +23,7 @@ import { FindSumWithdrawalsByAccountIdSinceQuery } from '../application/queries/
 import { GetOneByIdQuery } from '../application/queries/get-one-by-id.query';
 import { GetFiledByAccountIdQuery } from '../application/queries/get-failed.query';
 import { GetByAccountIdAndTypeQuery } from '../application/queries/get-by-accountId-and-type.query';
+import { TransactionEventHandlerModule } from '../application/event-handlers/event-handler.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { GetByAccountIdAndTypeQuery } from '../application/queries/get-by-accoun
       DepositEntity,
     ]),
     JwtModule,
+    TransactionEventHandlerModule,
   ],
   controllers: [TransactionController],
   providers: [

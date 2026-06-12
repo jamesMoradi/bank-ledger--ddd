@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { WithdrawCommand } from '../commands/withdraw.command';
 import {
   ACCOUNT_REPOSITORY,
@@ -22,6 +22,7 @@ export class WithdrawHandler implements ICommandHandler<WithdrawCommand> {
     private readonly accountRepository: IAccountRepository,
     @Inject(TRANSACTION_REPOSITORY)
     private readonly transactionRepository: ITransactionRepository,
+    private readonly eventBus: EventBus,
   ) {}
 
   async execute(command: WithdrawCommand): Promise<IResponse> {
@@ -63,7 +64,12 @@ export class WithdrawHandler implements ICommandHandler<WithdrawCommand> {
 
       throw error;
     }
-
+    account.pullEvents().forEach((event) => {
+      this.eventBus.publish(event);
+    });
+    transaction.pullEvents().forEach((event) => {
+      this.eventBus.publish(event);
+    });
     await this.transactionRepository.save(transaction);
     return { message: `${amount} ${currency} decreased from your balance` };
   }
